@@ -9,10 +9,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class ErrorTest {
 
-    private WebDriver driver;
+    private WebDriver webDriver;
     /**
      * set up selenium web driver.
      * NOTE: the selenium web driver might not be properly configured for your environment.
@@ -23,13 +24,19 @@ public class ErrorTest {
     @Before
     public void setUp() {
         // Set up ChromeDriver path
-        System.setProperty("webdriver.chrome.driver", "./chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "driver/chromedriver");//linux_64
+
+        // Get file
+        File file = new File("index.html");
+        String path = "file://" + file.getAbsolutePath();
 
         // Create a new ChromeDriver instance
-        driver = new ChromeDriver();
-        File file = new File("index.html");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("headless");
+        webDriver = new ChromeDriver(options);
+
         // Open the HTML file
-        driver.get(file.getAbsolutePath());
+        webDriver.get(path);
     }
     /**
      * ensure that when the button is clicked, the success line is displayed on the page as part of the catch block.
@@ -38,11 +45,11 @@ public class ErrorTest {
     public void testClickErrorButton() {
 
         // Find the button element and click it
-        WebElement button = driver.findElement(By.id("errorButton"));
+        WebElement button = webDriver.findElement(By.id("errorButton"));
         button.click();
 
         // Wait for the monitor element to update and retrieve its text
-        WebElement monitor = driver.findElement(By.id("monitor"));
+        WebElement monitor = webDriver.findElement(By.id("monitor"));
         String monitorText = monitor.getText();
 
         // Verify the expected text after the error handling
@@ -55,11 +62,11 @@ public class ErrorTest {
     public void testClickNoErrorButton() {
 
         // Find the button element and click it
-        WebElement button = driver.findElement(By.id("noErrorButton"));
+        WebElement button = webDriver.findElement(By.id("noErrorButton"));
         button.click();
 
         // Wait for the monitor element to update and retrieve its text
-        WebElement monitor = driver.findElement(By.id("monitor"));
+        WebElement monitor = webDriver.findElement(By.id("monitor"));
         String monitorText = monitor.getText();
 
         // Verify the expected text after the error handling
@@ -71,6 +78,6 @@ public class ErrorTest {
     @After
     public void tearDown() {
         // Close the browser
-        driver.quit();
+        webDriver.quit();
     }
 }
